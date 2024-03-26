@@ -11,6 +11,14 @@ c------------------------------------------------
       character *80 fn
       common /optim/ ioptimise
   
+c======================f2py=============================
+      real*8 rtx1, rtx2, rty1, rty2
+      common /range/ rtx1, rtx2, rty1, rty2
+      character *80 hypodata, fmt, splcoef
+      character *160 ftl
+      integer itemp(29000)
+
+c=======================================================
       real*8 buffer(100),h(8),x1(8)
  
       call mpi_init(ierr)
@@ -20,6 +28,37 @@ c------------------------------------------------
 C      print *,  'hello from task', myrank, 'of ', nprocs
 
       call readata(npp,bwm)
+
+c======================f2py=============================
+!
+! Python bindings
+!
+C Please input the name of the data file
+Cf2py intent(in) :: hypodata
+C Please input data format
+Cf2py intent(in) :: fmt
+C Input the length of the time intervals
+Cf2py real, intent(in) :: tz
+C Input number of events
+Cf2py integer, intent(in) :: nn
+C Input starting points of time
+Cf2py real, intent(in) :: zmin
+C Input the magnitude threshold and tstart
+Cf2py real, intent(in) :: xmg0
+Cf2py real, intent(in) :: tstart
+C Input the number of points for the polygon region
+Cf2py integer, intent(in) :: npoly
+Cf2py real, intent(in), dimension(npoly) :: tx
+Cf2py real, intent(in), dimension(npoly) :: ty
+C Input number of grids for background
+Cf2py integer, intent(in) :: mx, my
+Cf2py real, intent(in) :: rtx1, rtx2, rty1, rty2
+
+C 'Please input initial parameters
+Cf2py real, intent(in), dimension(8) :: b
+c=======================================================
+
+
       call para(nn)
       call bandwcalc(npp, bwm)
        
